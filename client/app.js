@@ -106,6 +106,7 @@ resetBtn.addEventListener("click", () => {
     })
     resetBtn.style.display = "none";
     messageBox.innerHTML = `X's turn`;
+    currPlayer = "X";
 
 })
 
@@ -141,6 +142,9 @@ btnIds.forEach((btn) => {
                     messageBox.innerHTML = "X's turn"
                 }
             }
+        }
+        else {
+            alert("Square is already occupied!")
         }
     })
 })
