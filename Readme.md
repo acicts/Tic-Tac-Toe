@@ -1,3 +1,12 @@
-<div style="width:100%;height:0;padding-bottom:109%;position:relative;"><iframe src="https://giphy.com/embed/LtGpcWj3donEg3Doj2" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/OregonStateEcampus-osu-tic-tac-toe-LtGpcWj3donEg3Doj2">via GIPHY</a></p>
+<p align="center"><img width="250px" src="https://media.istockphoto.com/vectors/tic-tac-toe-game-vector-id937025192?k=20&m=937025192&s=612x612&w=0&h=u6wE2AzhUieUcLlz8MFtFF6NKEGCmBj0v_bZErAOu5w=" /></p>
 
 # TIC-TAC-TOE
+This is an online Tic-Tac-Toe game you can play via the internet with a random user. We developed this game as the first project developed during pair programming sessions held at the ACICTS discord server.
+
+## Features
+- Room based gameplay
+
+We highly appreciate your contribution to improving the Tic-Tac-Toe game by ACICTS. Please refer following resources if you are willing to contribute to this project.
+
+-   [Contribution Guidlines]()
+-   [Code of Conduct]()
