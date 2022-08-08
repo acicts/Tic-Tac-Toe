@@ -1,151 +1,125 @@
-// DOM Nodes
-const startingWindow = document.getElementById("starting-window");
-const gameWindow = document.getElementById("game-window");
-const startBtn = document.getElementById("start-btn");
-const resetBtn = document.getElementById("reset-btn");
-const messageBox = document.getElementById("message")
+import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
-// Current Player and Status of the game
-let currPlayer = "X";
-let playStatus = "";
+const socket = io('http://localhost:8000');
 
-// Current board
+//Character(X/O) of the client and id of the room of the game
+let playingCharacter, roomId;
+
+//DOM Nodes
+const startingWindow = document.getElementById('starting-window');
+const gameWindow = document.getElementById('game-window');
+const startBtn = document.getElementById('start-btn');
+const resetBtn = document.getElementById('reset-btn');
+const messageBox = document.getElementById('message');
+
+//Socket event to start the game
+socket.on('game_started', (_playingCharacter, _roomId) => {
+	//Update display
+	gameWindow.style.display = 'block';
+	startingWindow.style.display = 'none';
+	resetBtn.style.display = 'none';
+	messageBox.innerHTML = `X's turn`;
+
+	//Update game variables
+	playingCharacter = _playingCharacter;
+	roomId = _roomId;
+	currPlayer = 'X';
+
+	alert(`Game started. You are: ${_playingCharacter}`);
+});
+
+//Current Player
+let currPlayer = 'X';
+
+//Current board
 let board = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-]
+	['', '', ''],
+	['', '', ''],
+	['', '', ''],
+];
 
-// Ids of buttons in the board
-const btnIds = [
-    "1-1", "1-2", "1-3",
-    "2-1", "2-2", "2-3",
-    "3-1","3-2","3-3",
-]
+//Ids of buttons in the board
+const btnIds = ['1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3'];
 
-// Logic to check the winnner
-// This function will be executed per each press 
-// on a equare  on the board
-const checkWinner = () => {
+//Logic to check the winnner
+//This function will be executed per each press
+//on a equare  on the board
 
-    // Checking rows
-    for (let i=0; i<3; i++){
-        const a = board[i][0];
-        const b = board[i][1];
-        const c = board[i][2];
-        
-        if (a != "" && a === b && b === c){
-            return "win"
-        }
-    }
+//Display only the start button in the start
+window.addEventListener('load', () => {
+	gameWindow.style.display = 'none';
+	resetBtn.style.display = 'none';
+});
 
-    // Checking columns
-    for (let i=0; i<3; i++){
-        const a = board[0][i];
-        const b = board[1][i];
-        const c = board[2][i];
-        
-        if (a != "" && a === b && b === c){
-            return "win"
-        }
-    }
-    
-    // Left Top to Bottom right diagonal
-    const a = board[0][0];
-    const b = board[1][1];
-    const c = board[2][2];
+//Open game window once the start button is clicked
+startBtn.addEventListener('click', () => {
+	//Emit event to join the game via socket.io
+	socket.emit('join_room');
 
-    if (a != "" && a === b && b === c){
-        return "win"
-    }
+	//Listen for waiting event
+	socket.on('w', (w) => {
+		alert('Waiting!');
+	});
+});
 
-    // Right Top to Left bottom diagonal
-    const d = board[0][2];
-    const e = board[1][1];
-    const f = board[2][0];
+//Reset board after the game is finished
+resetBtn.addEventListener('click', () => {
+	board = [
+		['', '', ''],
+		['', '', ''],
+		['', '', ''],
+	];
 
-    if (d != "" && d === e && e === f){
-        return "win"
-    }
+	btnIds.forEach((btn) => {
+		document.getElementById(btn).innerHTML = '';
+	});
 
-    // Check for draw
-    // The game is considered as a draw once all the squares
-    // consiste of either 'X' or 'O'
-    for (let i=0; i<3; i++){
-        for (let j=0; j<3; j++){
-            const square = board[i][j];
-            if (square === "") return undefined
-        }
-    }
+	//Re-join a room if the game ends
+	socket.emit('join_room');
+});
 
-    return "draw";
-}
-
-// Display only the start button in the start
-window.addEventListener("load", () => {
-    gameWindow.style.display = "none";
-    resetBtn.style.display = "none";
-})
-
-// Open game window once the start button is clicked
-startBtn.addEventListener("click", () => {
-    gameWindow.style.display = "block";
-    startingWindow.style.display = "none";
-})
-
-// Reset board after the game is finished
-resetBtn.addEventListener("click", () => {
-    board = [
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-    ];
-
-    btnIds.forEach((btn) => {
-        document.getElementById(btn).innerHTML = ""
-    })
-    resetBtn.style.display = "none";
-    messageBox.innerHTML = `X's turn`;
-    currPlayer = "X";
-
-})
-
-// Listening to clicks on the buttons in the board
 btnIds.forEach((btn) => {
-    const button = document.getElementById(btn);
-    
-    button.addEventListener("click", (e) => {
-        const coordinate = btn.split("-")
-        const y = parseInt(coordinate[0]) - 1;
-        const x = parseInt(coordinate[1]) - 1;
+	const button = document.getElementById(btn);
 
-        // Check whether the selected button is empty
-        if (board[y][x] === ""){
-            button.innerHTML = currPlayer;
-            board[y][x] = currPlayer;
-            const winningCondition = checkWinner();
-            if (winningCondition === "win"){
-                messageBox.innerHTML = `${currPlayer} is the winner`;
-                resetBtn.style.display = "block";
-            }
-            else if (winningCondition == "draw") {
-                messageBox.innerHTML = "The game is drawn";
-                resetBtn.style.display = "block";
-            }
-            else {
-                if (currPlayer == "X"){
-                    currPlayer = "O";
-                    messageBox.innerHTML = "O's turn"
-                }
-                else {
-                    currPlayer = "X"
-                    messageBox.innerHTML = "X's turn"
-                }
-            }
-        }
-        else {
-            alert("Square is already occupied!")
-        }
-    })
-})
+	//Listen for moves on each square
+	button.addEventListener('click', (e) => {
+		const coordinate = btn.split('-');
+		const y = parseInt(coordinate[0]) - 1;
+		const x = parseInt(coordinate[1]) - 1;
 
+		//Check whether the selected button is empty
+		if (board[y][x] === '') {
+			//Emit move event to the socket.io server
+			socket.emit('move', roomId, playingCharacter, y, x);
+		} else {
+			alert('Square is already occupied!');
+		}
+	});
+});
+
+//Listening to move event in socket.io
+socket.on('move', (character, y, x, winningCondition) => {
+	//Update logical board on the client
+	board[y][x] = character;
+
+	//Update the graphical board on the client
+	document.getElementById(y + 1 + '-' + (x + 1)).innerHTML = character;
+
+	//Check for game status
+	//If game is either draw, won or loss, end the game
+	if (winningCondition === 'win') {
+		messageBox.innerHTML = `${currPlayer} is the winner`;
+		resetBtn.style.display = 'block';
+	} else if (winningCondition == 'draw') {
+		messageBox.innerHTML = 'The game is drawn';
+		resetBtn.style.display = 'block';
+	} else {
+		if (currPlayer == 'X') {
+			currPlayer = 'O';
+			messageBox.innerHTML = "O's turn";
+		} else {
+			currPlayer = 'X';
+			messageBox.innerHTML = "X's turn";
+		}
+	}
+});
