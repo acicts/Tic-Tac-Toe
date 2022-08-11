@@ -4,10 +4,12 @@ const socket = io('http://localhost:8000');
 
 //Character(X/O) of the client and id of the room of the game
 let playingCharacter, roomId;
+let gameEnded = false;
 
 //DOM Nodes
 const startingWindow = document.getElementById('starting-window');
 const gameWindow = document.getElementById('game-window');
+const waitingWindow = document.getElementById('waiting-window');
 const startBtn = document.getElementById('start-btn');
 const resetBtn = document.getElementById('reset-btn');
 const messageBox = document.getElementById('message');
@@ -18,6 +20,7 @@ socket.on('game_started', (_playingCharacter, _roomId) => {
 	gameWindow.style.display = 'block';
 	startingWindow.style.display = 'none';
 	resetBtn.style.display = 'none';
+	waitingWindow.style.display = 'none';
 	messageBox.innerHTML = `X's turn`;
 
 	//Update game variables
@@ -48,6 +51,7 @@ const btnIds = ['1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3'];
 //Display only the start button in the start
 window.addEventListener('load', () => {
 	gameWindow.style.display = 'none';
+	waitingWindow.style.display = 'none';
 	resetBtn.style.display = 'none';
 });
 
@@ -58,7 +62,8 @@ startBtn.addEventListener('click', () => {
 
 	//Listen for waiting event
 	socket.on('w', (w) => {
-		alert('Waiting!');
+		startingWindow.style.display = 'none';
+		waitingWindow.style.display = 'flex';
 	});
 });
 
@@ -73,6 +78,7 @@ resetBtn.addEventListener('click', () => {
 	btnIds.forEach((btn) => {
 		document.getElementById(btn).innerHTML = '';
 	});
+	gameWindow.style.display = 'none';
 
 	//Re-join a room if the game ends
 	socket.emit('join_room');
@@ -88,7 +94,7 @@ btnIds.forEach((btn) => {
 		const x = parseInt(coordinate[1]) - 1;
 
 		//Check whether the selected button is empty
-		if (board[y][x] === '') {
+		if (board[y][x] === '' && !gameEnded) {
 			//Emit move event to the socket.io server
 			socket.emit('move', roomId, playingCharacter, y, x);
 		} else {
@@ -110,9 +116,11 @@ socket.on('move', (character, y, x, winningCondition) => {
 	if (winningCondition === 'win') {
 		messageBox.innerHTML = `${currPlayer} is the winner`;
 		resetBtn.style.display = 'block';
+		gameEnded = true;
 	} else if (winningCondition == 'draw') {
 		messageBox.innerHTML = 'The game is drawn';
 		resetBtn.style.display = 'block';
+		gameEnded = true;
 	} else {
 		if (currPlayer == 'X') {
 			currPlayer = 'O';
@@ -122,4 +130,12 @@ socket.on('move', (character, y, x, winningCondition) => {
 			messageBox.innerHTML = "X's turn";
 		}
 	}
+});
+
+// On opponent disconnection
+socket.on('victory', (message, currPlayer) => {
+	alert(message);
+	messageBox.innerHTML = `${currPlayer} is the winner`;
+	resetBtn.style.display = 'block';
+	gameEnded = true;
 });
