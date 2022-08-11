@@ -84,4 +84,27 @@ io.on('connection', (socket) => {
 			delete rooms[roomId];
 		}
 	});
+
+	// When a player disconnects
+	socket.on('disconnect', (reason) => {
+		if (waitingRoom === socket.id) {
+			waitingRoom = undefined;
+		} else {
+			for (const key in rooms) {
+				if (rooms[key].xPlayer === socket.id) {
+					io.to(rooms[key].oPlayer).emit(
+						'victory',
+						'Opponent disconnected!',
+						'O'
+					);
+				} else if (rooms[key].oPlayer === socket.id) {
+					io.to(rooms[key].xPlayer).emit(
+						'victory',
+						'Opponent disconnected!',
+						'X'
+					);
+				}
+			}
+		}
+	});
 });
