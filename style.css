@@ -2,22 +2,37 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Silkscreen', cursive;
 }
 
 #starting-window {
     width: 100%;
 }
 
+#game-window, #waiting-window {
+    display: none;
+}
+
+#waiting-window {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 2rem;
+    text-align: center;
+}
+
 .start-btn {
-    width: 20%;
+    padding: 10px 20px;
     margin-left: 40%;
     margin-top: 20px;
     margin-bottom: 20px;
-    height: 50px;
     background-color: aquamarine;
     color: crimson;
     border: none;
     cursor: pointer;
+    font-size: 1.8rem;
 }
 
 .container {
