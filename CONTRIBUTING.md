@@ -44,4 +44,4 @@ When reporting a bug we highly encourage you to use the provided template. Else,
 
 If you find yourself wishing for a feature that doesn't exist in this project, you are probably not alone. There are bound to be others out there with similar needs. Open an issue on our issues list on GitHub which describes the feature you would like to see, why you need it, and how it should work.
 
-## So that's it and Thank You again for your support in improving this porject by ACICTS
+## So that's it and Thank You again for your support in improving this project by ACICTS
