@@ -79,7 +79,7 @@ resetBtn.addEventListener('click', () => {
 		document.getElementById(btn).innerHTML = '';
 	});
 	gameWindow.style.display = 'none';
-
+	gameEnded = false;
 	//Re-join a room if the game ends
 	socket.emit('join_room');
 });
@@ -97,7 +97,7 @@ btnIds.forEach((btn) => {
 		if (board[y][x] === '' && !gameEnded) {
 			//Emit move event to the socket.io server
 			socket.emit('move', roomId, playingCharacter, y, x);
-		} else {
+		} else if (!gameEnded) {
 			alert('Square is already occupied!');
 		}
 	});
