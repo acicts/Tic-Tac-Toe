@@ -1,6 +1,6 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
-const socket = io('http://localhost:8000');
+const socket = io('https://ccicts-tic-tac-toe.herokuapp.com');
 
 //Character(X/O) of the client and id of the room of the game
 let playingCharacter, roomId;
