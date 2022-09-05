@@ -20,11 +20,11 @@ There are many ways you can contrbute to thi project such as,
 
 ## Is this your first contribution?
 
-No problems. Everyone one was once a beginner. First you can start by checking issues with `good first issue` which are specifically kept for beginners. Also, we recommend you to refer this [article](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github) before making your pull request.
+No problems. Everyone was once a beginner. First you can start by checking issues with `good first issue` which are specifically kept for beginners. Also, we recommend you to refer this [article](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github) before making your pull request.
 
 ## Getting started
 
-1. If you havent installed, please install `Node.Js` and `git`
+1. If you haven't installed, please install `Node.Js` and `git`
 2. First make a fork of the repo and clone the forked repo into your machine.
 3. Then install all the dependencies of the server by running `npm install`.
 4. Next make your changes.
